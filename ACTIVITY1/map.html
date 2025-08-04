@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heritage Map - Explore Africa</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="map-body">
+  <div class="container map-page">
+    <div class="map-header-compact">
+      <button class="home-btn" onclick="window.location.href='index.html'">🏠</button>
+      <div class="progress-section-inline">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text">
+          <span id="progressText">0/8 Sites</span>
+          <div class="badges" id="badgeContainer"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="game-container">
+      <div class="map-container">
+        <div id="map"></div>
+        <div class="map-instructions">
+          <div class="instruction-bubble">
+            Click markers to discover heritage sites! 🌟
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Site Popup Overlay -->
+    <div class="popup-overlay hidden" id="popupOverlay">
+      <div class="popup-card" id="popup">
+        <button class="close-btn" onclick="closePopup()">×</button>
+        <div class="popup-content">
+          <div class="site-header">
+            <h3 id="site-title">Site Title</h3>
+            <div class="site-country" id="site-country">Country: </div>
+          </div>
+          
+          <div class="popup-main-content">
+            <div class="site-visual" id="site-visual">
+              <div class="visual-factoid">
+                <div class="factoid-placeholder" id="factoidImage">
+                  <div class="placeholder-text">Heritage Site Image</div>
+                </div>
+                <div class="factoid-animation" id="factoidAnimation"></div>
+              </div>
+            </div>
+            
+            <div class="site-content-right">
+              <div class="site-info">
+                <p class="fun-fact-label">🎯 Fun Fact:</p>
+                <p id="site-fact" class="fun-fact">Fun Fact: </p>
+              </div>
+              
+              <div class="discovery-badge" id="discoveryBadge">
+                <span class="badge-emoji">🎉</span>
+                <span class="badge-message">Site Discovered!</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Hidden audio element for background narration -->
+          <audio id="site-audio" preload="metadata" autoplay>
+            <source src="" type="audio/mpeg" />
+          </audio>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Completion Modal -->
+    <div class="completion-modal hidden" id="completionModal">
+      <div class="modal-content">
+        <div class="celebration-header">
+          <h2>🎊 Congratulations, Explorer! 🎊</h2>
+          <p>You've discovered all of Africa's amazing World Heritage Sites!</p>
+        </div>
+        <div class="final-badge">
+          <div class="master-explorer-badge">
+            <span class="badge-icon">🏆</span>
+            <span class="badge-title">Master Explorer</span>
+          </div>
+        </div>
+        <div class="completion-buttons">
+          <button class="restart-btn" onclick="restartActivity()">
+            🔄 Explore Again
+          </button>
+          <button class="close-modal-btn" onclick="closeCompletionModal()">
+            ✨ Next Activity 
+          </button>
+        </div>
+      </div>
+      <div class="confetti" id="confetti"></div>
+      
+      <!-- Completion audio -->
+      <audio id="completionAudio" preload="metadata">
+        <source src="audio/complete.mp3" type="audio/mpeg" />
+      </audio>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

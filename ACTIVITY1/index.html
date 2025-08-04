@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discover Africa's Heritage</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="landing">
+  <div class="background-pattern"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="animated-title">
+        <h1>🌍 Discover Africa's Heritage 🏛️</h1>
+      </div>
+      
+      <div class="action-column">
+        <div class="explorer-badge">
+          <div class="badge-icon">🎖️</div>
+          <div class="badge-text">Explorer in Training</div>
+        </div>
+        
+        <button id="startBtn" class="start-button" onclick="showIntroPopup()">
+          <span class="btn-text">🚀 Start Your Adventure!</span>
+          <div class="btn-glow"></div>
+        </button>
+      </div>
+      
+      <!-- <div class="floating-elements">
+        <div class="float-element large" style="--delay: 0s; --x: 5%; --y: 10%;">🦁</div>
+        <div class="float-element large" style="--delay: 1s; --x: 90%; --y: 15%;">🐘</div>
+        <div class="float-element medium" style="--delay: 2s; --x: 10%; --y: 85%;">🦒</div>
+        <div class="float-element large" style="--delay: 3s; --x: 85%; --y: 80%;">🏺</div>
+        <div class="float-element medium" style="--delay: 4s; --x: 2%; --y: 50%;">🏛️</div>
+        <div class="float-element large" style="--delay: 5s; --x: 95%; --y: 45%;">🌴</div>
+        <div class="float-element medium" style="--delay: 6s; --x: 20%; --y: 5%;">💧</div>
+        <div class="float-element medium" style="--delay: 7s; --x: 80%; --y: 25%;">⛪</div>
+        <div class="float-element large" style="--delay: 8s; --x: 45%; --y: 2%;">📚</div>
+        <div class="float-element medium" style="--delay: 9s; --x: 15%; --y: 35%;">🏝️</div>
+        <div class="float-element large" style="--delay: 10s; --x: 75%; --y: 60%;">🌊</div>
+        <div class="float-element medium" style="--delay: 11s; --x: 35%; --y: 90%;">🗿</div>
+      </div> -->
+    </div>
+  </div>
+
+  <!-- Introduction Popup -->
+  <div class="intro-popup-overlay hidden" id="introPopupOverlay">
+    <div class="intro-popup-card">
+      <div class="intro-content">
+        <h2>🌍 Welcome, Young Explorer!</h2>
+        <div class="intro-text">
+          <p>"Hey there, young explorer! Ready to travel across Africa—without even leaving your seat? In this lesson, we're setting out on a virtual journey to discover the most treasured places on our continent. These places are called World Heritage Sites, and they're protected because they're special to all of humanity. Grab your map—we're about to begin!"</p>
+        </div>
+        <div class="intro-audio-section">
+          <button class="audio-play-btn" id="introAudioBtn">
+            <span class="audio-icon">🔊</span>
+            <span class="audio-label">Listen to Introduction</span>
+          </button>
+          <button class="continue-btn" onclick="goToMap()">Continue to Map</button>
+
+          <audio id="introAudio" preload="metadata">
+            <source src="audio/introduction.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+        <div class="intro-buttons">
+          <!-- <button class="skip-btn" onclick="goToMap()">Skip & Start Exploring</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let introAudioPlaying = false;
+    
+    function showIntroPopup() {
+      document.getElementById('introPopupOverlay').classList.remove('hidden');
+      
+      // Auto-play introduction audio
+      setTimeout(() => {
+        const audio = document.getElementById('introAudio');
+        const btn = document.getElementById('introAudioBtn');
+        playIntroAudio(audio, btn);
+      }, 900);
+    }
+    
+    function playIntroAudio(audio, btn) {
+      if (!introAudioPlaying) {
+        audio.play().catch(e => console.log('Audio play failed:', e));
+        btn.innerHTML = '<span class="audio-icon">⏸️</span><span class="audio-label">Pause Introduction</span>';
+        btn.classList.add('playing');
+        introAudioPlaying = true;
+      } else {
+        audio.pause();
+        btn.innerHTML = '<span class="audio-icon">▶️</span><span class="audio-label">Listen to Introduction</span>';
+        btn.classList.remove('playing');
+        introAudioPlaying = false;
+      }
+    }
+    
+    function goToMap() {
+      document.body.classList.add('transitioning');
+      setTimeout(() => {
+        window.location.href = 'map.html';
+      }, 500);
+    }
+    
+    // Setup audio controls
+    document.addEventListener('DOMContentLoaded', function() {
+      const audioBtn = document.getElementById('introAudioBtn');
+      const audio = document.getElementById('introAudio');
+      
+      if (audioBtn && audio) {
+        audioBtn.addEventListener('click', function() {
+          playIntroAudio(audio, this);
+        });
+        
+        audio.addEventListener('ended', function() {
+          audioBtn.innerHTML = '<span class="audio-icon">▶️</span><span class="audio-label">Listen Again</span>';
+          audioBtn.classList.remove('playing');
+          introAudioPlaying = false;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
