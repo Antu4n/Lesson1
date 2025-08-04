@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biology Explorer - Match the Site to Its Spot!</title>
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div id="game-wrapper">
+        <div id="game-container">
+            <div id="start-screen" class="screen">
+                
+                <audio id="intro-audio" src="assets/audio/intro.mp3" preload="auto"></audio>
+                <audio id="ding-audio" src="./assets/audio/ding.mp3" preload="auto"></audio>
+                <audio id="buzz-audio" src="./assets/audio/buzz.mp3" preload="auto"></audio>
+                <button class="start-button">Start Activity</button>
+            </div>
+
+            <div id="game-screen" class="screen hidden">
+                <div class="game-top-section">
+                    <h1 id="game-title">Match the Site to Its Spot!</h1>
+                    <div id="progress-container">
+                        <div id="progress-bar"></div>
+                        <div id="progress-text">0 / 8</div>
+                    </div>
+                </div>
+                <div id="game-board">
+                    <img id="africa-map" src="./asset/images/map3.png" alt="Map of Africa with markers">
+                    <!-- Map Markers (Drop Zones) - Positions are approximate, adjust as needed -->
+                    <div class="map-marker drop-zone" data-marker="A" style="top: 10%; left: 54%;"><span>A</span></div>
+                  <div class="map-marker drop-zone" data-marker="B" style="top: 25%; left: 40%;"><span>B</span></div>
+                  <div class="map-marker drop-zone" data-marker="C" style="top: 76%; left: 55%;"><span>C</span></div>
+                  <div class="map-marker drop-zone" data-marker="D" style="top: 55%; left: 55%;"><span>D</span></div>
+                  <div class="map-marker drop-zone" data-marker="E" style="top: 92%; left: 49%;"><span>E</span></div>
+                  <div class="map-marker drop-zone" data-marker="F" style="top: 75%; left: 52%;"><span>F</span></div>
+                  <div class="map-marker drop-zone" data-marker="G" style="top: 60%; left: 62%;"><span>G</span></div>
+                  <div class="map-marker drop-zone" data-marker="H" style="top: 36%; left: 57%;"><span>H</span></div>
+                </div>
+                <div id="drag-items-container">
+                    <!-- Draggable site names will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div id="end-screen" class="screen hidden">
+                <div class="summary-container">
+                    <div class="summary-title-banner">
+                        🎉 Activity Completed
+                    </div>
+                    <div class="summary-content">
+                        Incredible job! 🧭 You’ve matched all the sites to their rightful places across Africa. Whether it's desert pyramids, island reserves, or ancient cities—your knowledge is right on the map. Let’s keep the learning going!
+                    </div>
+                    <div id="badge-reward"></div>
+                    <div id="bonus-tips"></div>
+                </div>
+                <div style="display:flex">
+                <button id="previous-activity-button">Previous Activity</button>
+<button id="next-activity-button">Next Activity</button>
+</div>
+                <button id="play-again-button">Play Again</button>
+
+                
+
+            </div>
+
+            <div id="feedback-modal-overlay" class="hidden">
+                <div id="feedback-modal">
+                    <div id="feedback-title"></div>
+                    <div id="feedback-modal-text"></div>
+                    <button id="next-question-button">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
