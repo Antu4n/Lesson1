@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Heritage Bingo - Guess the Site!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #59379b;
+            --secondary: #fbb03b;
+            --accent: #ffff00;
+            --text: #333333;
+            --light: #ffffff;
+            --dark: #1a1a1a;
+            --correct: #4CAF50;
+            --incorrect: #F44336;
+            --timer-bg: rgba(255, 255, 255, 0.9);
+            --timer-border: #59379b;
+            --timer-fill: #fbb03b;
+            --timer-text: #59379b;
+            --option-1: #45B7D1;
+            --option-2: #45B7D1;
+            --option-3: #45B7D1;
+            --question-number: #2c3e50;
+            --border-radius: 20px;
+            --primary-color: #59379b;
+            --secondary-color: #fbb03b;
+            --text-color-light: #ffffff;
+            --text-color-dark: #333333;
+            --shadow-dark: rgba(0, 0, 0, 0.2);
+            --card-background-light: #f5f5f5;
+            --correct-color: #4CAF50;
+            --incorrect-color: #F44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Chevin Pro Medium', 'Poppins',  sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1200px;
+            aspect-ratio: 16/9;
+            background-color: var(--light);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px var(--shadow-dark);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-header {
+            background-color: var(--primary);
+            color: var(--light);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .game-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-label {
+            color: var(--light);
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .progress-container {
+            width: 200px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--secondary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .game-content {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background-map {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        /* New Start Screen Styles */
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #59379b;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            text-align: center;
+            padding: 30px;
+            background-image: url('gamebg.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .start-title {
+            font-size: 4.2rem;
+            color: var(--text-color-light);
+            margin-bottom: 1.2rem;
+            text-align: center;
+        }
+
+        .start-description {
+            font-size: 18px;
+            color: var(--light);
+            margin-bottom: 40px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        .start-btn {
+            background: #FBB03B;
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.32rem;
+            border: 3.6px solid #fff;
+            border-radius: 3rem;
+            padding: 0.72rem 2.64rem;
+            margin-top: 1rem;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            text-shadow: 0 2px 0 #b88b2a;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        /* Updated Question Container Layout */
+        .question-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .question-content {
+            display: flex;
+            flex: 1;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .question-image-container {
+            flex: 0 0 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .question-image {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 3px solid var(--primary);
+        }
+
+        /* PROFESSIONAL TIMER STYLES WITH ADJUSTED POSITION */
+        .timer-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 10px auto 15px;
+            text-align: center;
+        }
+
+        .timer-outer-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                var(--secondary) 0deg,
+                var(--secondary) 0deg,
+                transparent 0deg
+            );
+            box-shadow: 0 0 15px rgba(251, 176, 59, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .timer-inner-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .timer-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .time-remaining-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+            margin: 5px 0 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Timer warning state */
+        .timer-warning .timer-outer-ring {
+            animation: pulse 1s infinite;
+            box-shadow: 0 0 20px rgba(251, 176, 59, 0.5);
+        }
+
+        .timer-warning .timer-text {
+            color: #e74c3c;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .question-text-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--question-number);
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: var(--light);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Colored option buttons */
+        .option-btn:nth-child(4n+1) {
+            background-color: var(--option-3);
+            color: white;
+        }
+        .option-btn:nth-child(4n+2) {
+            background-color: var(--option-3);
+            color: white;
+        }
+        .option-btn:nth-child(4n+3) {
+            background-color: var(--option-3);
+            color: white;
+        }
+        .option-btn:nth-child(4n+4) {
+            background-color: var(--option-3);
+            color: white;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct);
+            color: var(--light);
+            border-color: var(--correct);
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect);
+            color: var(--light);
+            border-color: var(--incorrect);
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: var(--light);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .next-btn:hover {
+            background-color: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Game Over Screen */
+        .game-over-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #59379b;
+            display: none;
+            z-index: 5;
+            padding: 30px;
+            background-image: url('gamebg.png');
+            background-size: cover;
+            background-position: center;
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .game-over-content {
+    display: flex;
+    height: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+}
+
+.game-over-left {
+    flex: 0 0 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-over-right {
+    flex: 0 0 50%;
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Gradient border */
+.game-over-right::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #fbb03b);
+}
+
+/* Add this new rule for the gradient border */
+
+
+
+        .game-over-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--light);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .final-score {
+            font-size: 24px;
+            color: var(--accent);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .badge-container {
+            margin-bottom: 30px;
+        }
+
+        .badge-image {
+            width: 150px;
+            height: 150px;
+            object-fit: contain;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+        }
+
+        .badge-title {
+            font-size: 24px;
+            color: var(--secondary);
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .takeaways-title {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .takeaways-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .takeaways-list li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .takeaways-list li:before {
+            content: "✓";
+            color: var(--correct);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .game-over-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .replay-btn, .prev-btn {
+            background-color: var(--secondary);
+            color: var(--dark);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .prev-btn {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+
+        .replay-btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .prev-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ffff00"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>');
+            background-size: contain;
+            opacity: 0;
+            animation: sparkle 1s ease-out;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Feedback Modal Styles */
+        #feedback-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+            display: none;
+        }
+
+        #feedback-modal {
+            background-color: var(--card-background-light);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            border-top: 8px solid;
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn { from { transform: translateY(30px)
+        scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1;
+        } }
+
+        #feedback-modal.correct-feedback { border-color: var(--correct-color); }
+        #feedback-modal.incorrect-feedback { border-color: var(--incorrect-color); }
+
+        .feedback-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        #feedback-modal.correct-feedback .feedback-title { color: var(--correct-color); }
+        #feedback-modal.incorrect-feedback .feedback-title { color: var(--incorrect-color); }
+
+        #feedback-modal-text {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #000;
+            margin-bottom: 2rem;
+        }
+
+        #feedback-modal-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            color: var(--text-color-light);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #feedback-modal.correct-feedback #feedback-modal-btn {
+            background: linear-gradient(45deg, var(--correct-color), #8e44ad);
+        }
+
+        #feedback-modal.incorrect-feedback #feedback-modal-btn {
+            background: linear-gradient(45deg, var(--incorrect-color), #c0392b);
+        }
+
+        #feedback-modal-btn:hover {
+            transform: scale(1.03);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .game-container {
+                border-radius: 0;
+                max-width: 100%;
+                height: 100vh;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .header-progress {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .question-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .question-image-container {
+                flex: 0 0 auto;
+            }
+
+            .question-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .timer-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .timer-inner-circle {
+                width: 75px;
+                height: 75px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .question-text {
+                font-size: 18px;
+            }
+
+            .option-btn {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            .game-over-content {
+                flex-direction: column;
+            }
+
+            .game-over-right {
+                margin-top: 20px;
+                padding: 20px;
+            }
+
+            .game-over-title {
+                font-size: 28px;
+            }
+
+            .final-score {
+                font-size: 20px;
+            }
+
+            .takeaways-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="game-title">World Heritage Bingo</div>
+            <div class="header-progress">
+                <span class="progress-label">Progress:</span>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                    <div class="progress-text" id="progress-text">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="start-screen" id="start-screen">
+            <h1 class="start-title">World Heritage Bingo</h1>
+            <p class="start-description">Test your knowledge of Africa's amazing World Heritage Sites! Answer questions before time runs out to earn badges.</p>
+            <button class="start-btn" id="start-btn">Start Game</button>
+        </div>
+
+        <div class="game-content">
+            <img src="images/africa-map.png" alt="Africa Map" class="background-map">
+
+            <div class="question-container">
+                <div class="question-content">
+                    <div class="question-image-container">
+                        <img id="question-image" src="" alt="Heritage Site" class="question-image">
+                        <div class="time-remaining-label">Time Remaining</div>
+                        <div class="timer-container" id="timer-container">
+                            <div class="timer-outer-ring" id="timer-outer-ring">
+                                <div class="timer-inner-circle">
+                                    <div class="timer-text" id="time">20</div>
+                                    <div class="timer-label">seconds</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="question-text-container">
+                        <div class="question-number" id="question-number">Question 1</div>
+                        <div class="question-text" id="question-text"></div>
+                        <div class="options-container" id="options-container"></div>
+                    </div>
+                </div>
+
+                <button class="next-btn" id="next-btn">Next Question</button>
+            </div>
+
+            <div class="game-over-container" id="game-over-container">
+                <div class="game-over-content">
+                    <div class="game-over-left">
+                        <h2 class="game-over-title">Game Over!</h2>
+                        <div class="final-score">Your score: <span id="final-score">0</span>/8</div>
+
+                        <div class="badge-container">
+                            <img id="badge-image" src="" alt="Badge" class="badge-image">
+                            <div class="badge-title" id="badge-title"></div>
+                        </div>
+
+                        <div class="game-over-buttons">
+                            <button class="prev-btn" id="prev-btn">Previous</button>
+                            <button class="replay-btn" id="replay-btn">Play Again</button>
+                        </div>
+                    </div>
+                    <div class="game-over-right">
+                        <h3 class="takeaways-title">Key Takeaways</h3>
+                        <ul class="takeaways-list">
+                            <li>Africa is home to many World Heritage Sites that are globally recognized for their cultural, historical, or natural importance.</li>
+                            <li>These sites include diverse locations like Robben Island, Victoria Falls, the Pyramids of Giza, and Serengeti National Park.</li>
+                            <li>Knowing where these sites are helps us understand the richness and variety of Africa's heritage.</li>
+                            <li>Maps are powerful tools for locating and comparing sites across the continent.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback-modal-overlay">
+        <div id="feedback-modal">
+            <div class="feedback-title" id="feedback-title"></div>
+            <div id="feedback-modal-text"></div>
+            <button id="feedback-modal-btn">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // Game data
+        const questions = [
+            {
+                question: "This site in South Africa was where Nelson Mandela was imprisoned.",
+                options: ["Constitution Hill", "Robben Island", "Soweto Township", "District Six"],
+                correctAnswer: 1,
+                feedbackCorrect: "Yes! Robben Island is correct. It's a symbol of resilience and freedom in South Africa's history.",
+                feedbackIncorrect: "Close, but think again. This site is off the coast of Cape Town and once held political prisoners.",
+                image: "images/robben-island.png"
+            },
+            {
+                question: "These massive triangular tombs were built over 4,000 years ago without machines.",
+                options: ["The Hanging Gardens of Babylon", "The Parthenon", "The Pyramids of Giza", "Stonehenge"],
+                correctAnswer: 2,
+                feedbackCorrect: "Excellent! The Pyramids of Giza in Egypt are one of the oldest and most famous wonders of the world.",
+                feedbackIncorrect: "Not quite. Think of a hot desert country in North Africa where pharaohs ruled.",
+                image: "images/pyramids-giza.png"
+            },
+            {
+                question: "This tropical forest is home to the rare Coco de Mer palm.",
+                options: ["Daintree Rainforest", "Amazon Rainforest", "Vallée de Mai", "Bwindi Impenetrable Forest"],
+                correctAnswer: 2,
+                feedbackCorrect: "Correct! Vallée de Mai in Seychelles is a unique island forest that protects rare wildlife and plants.",
+                feedbackIncorrect: "Not this time. This forest isn't on mainland Africa—it's on a group of islands in the Indian Ocean.",
+                image: "images/vallee-de-mai.png"
+            },
+            {
+                question: "This stone city in southern Africa was built without mortar.",
+                options: ["Timbuktu", "Great Zimbabwe", "Carthage", "Mapungubwe"],
+                correctAnswer: 1,
+                feedbackCorrect: "That's right! Great Zimbabwe Ruins show the brilliance of ancient African builders.",
+                feedbackIncorrect: "Hmm... try again. This ancient city shares its name with the country it's found in.",
+                image: "images/great-zimbabwe.png"
+            },
+            {
+                question: "This East African site hosts the world's largest animal migration.",
+                options: ["Serengeti National Park", "Maasai Mara Reserve", "Ngorongoro Crater", "Amboseli National Park"],
+                correctAnswer: 0,
+                feedbackCorrect: "Yes! The Serengeti National Park is famous for the great wildebeest migration!",
+                feedbackIncorrect: "Almost! Think about open grasslands in East Africa—where zebras and wildebeests roam freely.",
+                image: "images/serengeti.png"
+            },
+            {
+                question: "These ancient churches in Ethiopia were carved into rock, not built above it.",
+                options: ["The Rock-Hewn Churches of Lalibela", "The Church of the Nativity", "The Cathedral of Notre-Dame", "The Hagia Sophia"],
+                correctAnswer: 0,
+                feedbackCorrect: "Perfect! The Rock-Hewn Churches of Lalibela are a marvel of faith and architecture.",
+                feedbackIncorrect: "Not quite. These structures are hidden underground, in a country in the Horn of Africa.",
+                image: "images/lalibela.png"
+            },
+            {
+                question: "This site in Mali was once a global center of trade and Islamic learning.",
+                options: ["Marrakech", "Cairo", "Timbuktu", "Kano"],
+                correctAnswer: 2,
+                feedbackCorrect: "Well done! Timbuktu was a city of scholars, manuscripts, and great wealth.",
+                feedbackIncorrect: "That's not it. Think of a desert city in West Africa famous for gold, salt, and books.",
+                image: "images/timbuktu.png"
+            },
+            {
+                question: "Known as 'The Smoke That Thunders,' this waterfall straddles two countries.",
+                options: ["Victoria Falls", "Niagara Falls", "Blue Nile Falls", "Tugela Falls"],
+                correctAnswer: 0,
+                feedbackCorrect: "Yes! That's Victoria Falls, on the border of Zambia and Zimbabwe. It's breathtaking!",
+                feedbackIncorrect: "Try again. This waterfall is part of the Zambezi River and lies between two countries in southern Africa.",
+                image: "images/victoria-falls.png"
+            }
+        ];
+
+        // Audio files
+        const audio = {
+            correct: new Audio('audio/correct.mp3'),
+            incorrect: new Audio('audio/wrong.mp3'),
+            drumroll: new Audio('audio/autro-voiceover.mp3'),
+            success: new Audio('audio/success.mp3'),
+            start: new Audio('audio/intro_voiceover.mp3'),
+            countdown: new Audio('audio/count_down.mp3'),
+            intro: new Audio('audio/intro-voiceover.mp3')
+        };
+
+        // Game variables
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 20;
+        let gameActive = true;
+        let hintsUsed = 0;
+        let countdownPlaying = false;
+
+        // DOM elements
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const questionNumber = document.getElementById('question-number');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const timeElement = document.getElementById('time');
+        const timerOuterRing = document.getElementById('timer-outer-ring');
+        const timerContainer = document.getElementById('timer-container');
+        const gameOverContainer = document.getElementById('game-over-container');
+        const finalScoreElement = document.getElementById('final-score');
+        const replayBtn = document.getElementById('replay-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const badgeImage = document.getElementById('badge-image');
+        const badgeTitle = document.getElementById('badge-title');
+        const questionImage = document.getElementById('question-image');
+        const feedbackModalOverlay = document.getElementById('feedback-modal-overlay');
+        const feedbackModal = document.getElementById('feedback-modal');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackModalText = document.getElementById('feedback-modal-text');
+        const feedbackModalBtn = document.getElementById('feedback-modal-btn');
+
+        // Play intro music when page loads
+        window.addEventListener('load', () => {
+            audio.intro.loop = true;
+            audio.intro.volume = 0.5;
+            audio.intro.play().catch(e => console.log("Audio play prevented:", e));
+        });
+
+        // Initialize game
+        function initGame() {
+            // Stop intro music
+            audio.intro.pause();
+            audio.intro.currentTime = 0;
+
+            startScreen.style.display = 'none';
+            currentQuestionIndex = 0;
+            score = 0;
+            hintsUsed = 0;
+            updateProgress();
+            loadQuestion();
+            playAudio('start');
+        }
+
+        // Load question
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+                return;
+            }
+
+            gameActive = true;
+            const question = questions[currentQuestionIndex];
+            questionNumber.textContent = `Question ${currentQuestionIndex + 1}`;
+            questionText.textContent = question.question;
+            questionImage.src = question.image;
+
+            // Clear previous options
+            optionsContainer.innerHTML = '';
+
+            // Create new options
+            question.options.forEach((option, index) => {
+                const optionBtn = document.createElement('button');
+                optionBtn.className = 'option-btn';
+                optionBtn.textContent = option;
+                optionBtn.dataset.index = index;
+                optionBtn.addEventListener('click', () => selectOption(index));
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            // Reset timer
+            resetTimer();
+            startTimer();
+
+            // Hide next button
+            nextBtn.style.display = 'none';
+        }
+
+        // Select option
+        function selectOption(selectedIndex) {
+            if (!gameActive) return;
+
+            gameActive = false;
+            clearInterval(timer);
+            timerContainer.classList.remove('timer-warning');
+
+            // Stop countdown audio if playing
+            if (countdownPlaying) {
+                audio.countdown.pause();
+                audio.countdown.currentTime = 0;
+                countdownPlaying = false;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+
+            // Disable all buttons
+            optionButtons.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+
+            // Mark correct and incorrect answers
+            optionButtons[question.correctAnswer].classList.add('correct');
+            if (selectedIndex !== question.correctAnswer) {
+                optionButtons[selectedIndex].classList.add('incorrect');
+                feedbackTitle.textContent = "Wrong!";
+                feedbackModal.className = "feedback-modal incorrect-feedback";
+                feedbackModalText.textContent = question.feedbackIncorrect;
+                feedbackModalText.className = 'feedback-text incorrect';
+                hintsUsed++;
+                playAudio('incorrect');
+            } else {
+                score++;
+                updateProgress();
+                feedbackTitle.textContent = "Correct!";
+                feedbackModal.className = "feedback-modal correct-feedback";
+                feedbackModalText.textContent = question.feedbackCorrect;
+                feedbackModalText.className = 'feedback-text correct';
+                createSparkles();
+                playAudio('correct');
+            }
+
+            // Show feedback modal
+            feedbackModalOverlay.style.display = 'flex';
+        }
+
+        // Next question
+        function nextQuestion() {
+            currentQuestionIndex++;
+            updateProgress();
+            loadQuestion();
+        }
+
+        // Update progress
+        function updateProgress() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${Math.round(progress)}%`;
+        }
+
+        // Timer functions
+        function startTimer() {
+            timeLeft = 20;
+            timeElement.textContent = timeLeft;
+            updateTimerVisual();
+            timerContainer.classList.remove('timer-warning');
+
+            timer = setInterval(() => {
+                timeLeft--;
+                timeElement.textContent = timeLeft;
+                updateTimerVisual();
+
+                // Play countdown sound when 5 seconds remain
+                if (timeLeft <= 5 && !countdownPlaying) {
+                    playAudio('countdown');
+                    countdownPlaying = true;
+                    timerContainer.classList.add('timer-warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timeUp();
+                }
+            }, 1000);
+        }
+
+        function updateTimerVisual() {
+            const percentage = (timeLeft / 20) * 360;
+            timerOuterRing.style.background = `conic-gradient(
+                var(--secondary) 0deg,
+                var(--secondary) ${percentage}deg,
+                transparent ${percentage}deg
+            )`;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            timeLeft = 20;
+            timeElement.textContent = timeLeft;
+            updateTimerVisual();
+            timerContainer.classList.remove('timer-warning');
+
+            // Stop countdown audio if playing
+            if (countdownPlaying) {
+                audio.countdown.pause();
+                audio.countdown.currentTime = 0;
+                countdownPlaying = false;
+            }
+        }
+
+        function timeUp() {
+            if (!gameActive) return;
+
+            gameActive = false;
+            const question = questions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+
+            // Disable all buttons
+            optionButtons.forEach(btn => {
+                btn.style.pointerEvents = 'none';
+            });
+
+            // Mark correct answer
+            optionButtons[question.correctAnswer].classList.add('correct');
+            feedbackTitle.textContent = "Time Up!";
+            feedbackModal.className = "feedback-modal incorrect-feedback";
+            feedbackModalText.textContent = "Time's up! " + question.feedbackIncorrect;
+            feedbackModalText.className = 'feedback-text incorrect';
+            hintsUsed++;
+            playAudio('incorrect');
+
+            // Show feedback modal
+            feedbackModalOverlay.style.display = 'flex';
+        }
+
+        // End game
+        function endGame() {
+            gameOverContainer.style.display = 'flex';
+            finalScoreElement.textContent = score;
+            playAudio('drumroll');
+
+            // Determine badge
+            let badge, title;
+            if (score >= 7 && hintsUsed === 0) {
+                badge = "images/explorer-elite.png";
+                title = "Explorer Elite";
+            } else if (score >= 7) {
+                badge = "images/gold-badge.png";
+                title = "Gold Badge";
+            } else if (score >= 5) {
+                badge = "images/silver-badge.png";
+                title = "Silver Badge";
+            } else {
+                badge = "images/bronze-badge.png";
+                title = "Bronze Badge";
+            }
+
+            badgeImage.src = badge;
+            badgeTitle.textContent = title;
+        }
+
+        // Create sparkle effect
+        function createSparkles() {
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                sparkle.style.animationDelay = `${Math.random() * 0.5}s`;
+                document.querySelector('.question-container').appendChild(sparkle);
+
+                // Remove sparkle after animation
+                setTimeout(() => {
+                    sparkle.remove();
+                }, 1000);
+            }
+        }
+
+        function playAudio(soundName) {
+            if (audio[soundName]) {
+                audio[soundName].currentTime = 0; // Reset audio to start
+                audio[soundName].play().catch(e => console.error("Audio playback failed:", e));
+            }
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', initGame);
+        nextBtn.addEventListener('click', nextQuestion);
+        replayBtn.addEventListener('click', () => {
+            // Stop drumroll audio
+            audio.drumroll.pause();
+            audio.drumroll.currentTime = 0;
+
+            gameOverContainer.style.display = 'none';
+            initGame();
+        });
+        prevBtn.addEventListener('click', () => {
+            // Stop drumroll audio
+            audio.drumroll.pause();
+            audio.drumroll.currentTime = 0;
+
+            // Placeholder for future functionality
+            console.log("Previous button clicked");
+        });
+        feedbackModalBtn.addEventListener('click', () => {
+            feedbackModalOverlay.style.display = 'none';
+            nextQuestion();
+        });
+    </script>
+</body>
+</html>
