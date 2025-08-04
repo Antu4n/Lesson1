@@ -404,12 +404,12 @@ function showFeedback(isCorrect, message, siteData = null) {
     });
 
     nextActivityBtn?.addEventListener('click', () => {
-        alert('Next activity coming soon...');
-    });
+    window.location.href = '../ACTIVITY3/index.html'; // Replace with actual relative path
+});
 
     previousActivityBtn?.addEventListener('click', () => {
-        alert('Previous activity placeholder');
-    });
+    window.location.href = '../ACTIVITY1/index.html'; // Replace with actual relative path
+});
 
     playNarrationBtn.addEventListener('click', () => {
         const playIcon = document.getElementById('play-icon');
