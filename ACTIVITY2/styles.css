@@ -106,10 +106,15 @@
         width: 1.5em; 
         height: 1.5em;
     }
-
+.start-container{
+ width:100%;
+        display:flex;
+        justify-content: center;
+}
     .start-button, #play-again-button, #next-activity-button,
 #previous-activity-button {
         background: #FBB03B; 
+       
         color: #fff;
         font-weight: 900; 
         font-size: 1.32rem;
